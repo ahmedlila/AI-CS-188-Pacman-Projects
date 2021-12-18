@@ -139,29 +139,111 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
     def getAction(self, gameState):
         """
-        Returns the minimax action from the current gameState using self.depth
-        and self.evaluationFunction.
+        You do not need to change this method, but you're welcome to.
 
-        Here are some method calls that might be useful when implementing minimax.
+        getAction chooses among the best options according to the evaluation function.
 
-        gameState.getLegalActions(agentIndex):
-        Returns a list of legal actions for an agent
-        agentIndex=0 means Pacman, ghosts are >= 1
-
-        gameState.generateSuccessor(agentIndex, action):
-        Returns the successor game state after an agent takes an action
-
-        gameState.getNumAgents():
-        Returns the total number of agents in the game
-
-        gameState.isWin():
-        Returns whether or not the game state is a winning state
-
-        gameState.isLose():
-        Returns whether or not the game state is a losing state
+        Just like in the previous project, getAction takes a GameState and returns
+        some Directions.X for some X in the set {NORTH, SOUTH, WEST, EAST, STOP}
         """
+        # Collect legal moves and successor states
+        legalMoves = gameState.getLegalActions()
+
+        # Choose one of the best actions
+        scores = [self.evaluationFunction(gameState, action) for action in legalMoves]
+        bestScore = max(scores)
+        bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
+        chosenIndex = random.choice(bestIndices)  # Pick randomly among the best
+
+        "Add more of your code here if you want to"
+
+        return legalMoves[chosenIndex]
+
+    def evaluationFunction(self, currentGameState, action):
+        """
+        Design a better evaluation function here.
+
+        The evaluation function takes in the current and proposed successor
+        GameStates (pacman.py) and returns a number, where higher numbers are better.
+
+        The code below extracts some useful information from the state, like the
+        remaining food (newFood) and Pacman position after moving (newPos).
+        newScaredTimes holds the number of moves that each ghost will remain
+        scared because of Pacman having eaten a power pellet.
+
+        Print out these variables to see what you're getting, then combine them
+        to create a masterful evaluation function.
+        """
+        # Useful information you can extract from a GameState (pacman.py)
+        successorGameState = currentGameState.generatePacmanSuccessor(action)
+        newPos = successorGameState.getPacmanPosition()
+        newFood = successorGameState.getFood()
+        totalFood = successorGameState.getNumFood()
+
+        newGhostStates = successorGameState.getGhostStates()
+        newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+        newPos_ghost = successorGameState.getGhostPosition(1)
+        capsules = [capsule for capsule in successorGameState.getCapsules()]
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        #
+        # Reflex agent Depends on current state and take an action based on it
+        ghost_distance = util.manhattanDistance(newPos, newPos_ghost)
+        hasFood = successorGameState.hasFood(newPos[0], newPos[1])
+        print(successorGameState.getScore(), ghost_distance, hasFood)
+        # capsules_distance= [util.manhattanDistance(capsules[i],newPos) for i in range(len(capsules))]
+        # From Grid Class
+        foodLoc = []
+        for i in range(newFood.width):
+            for j in range(newFood.height):
+                if newFood[i][j]:
+                    loc = (i, j)
+                    value = util.manhattanDistance(newPos, loc)
+                    foodLoc.append(value)
+        if len(foodLoc) > 1:  # [1,2,1,4,2,5,8]
+            foodDist = min(foodLoc)
+        elif len(foodLoc) == 1:
+            foodDist = foodLoc[0]
+        else:
+            foodDist = 1
+        if ghost_distance <= 8:
+            return successorGameState.getScore() + ghost_distance * 3 + 0.9 / (foodDist)
+        return successorGameState.getScore() + ghost_distance * 0.1 + 0.9 / (foodDist)
+
+    def minimax(self, currentstate, depth):
+        '''Minimax implementation.'''
+        d = 0
+        Action = getAction(self, currentstate)
+        legalMoves = gameState.getLegalActions()
+
+        def Cut_Off_test(d):
+            if d == self.depth:
+                return True
+            else:
+                return False
+
+        def max_value(curentstate, d):
+            if Cut_Off_test(d):
+                return evaluationFunction(curentstate, Action)
+            maxi = -inf
+            for action in legalMoves:
+                maxi = max(maxi, min_value(getAction(currentstate, action), d + 1))
+            return maxi
+
+        def min_value(currentstate, d):
+            if Cut_Off_test(d):
+                return evaluationFunction(currentstate, Action)
+            mini = +inf
+            for action in legalMoves:
+                mini = min(mini, max_value(getAction(currentstate, action), d + 1))
+            return mini
+
+        best_action, best_value = None, None
+        for action in legalMoves:
+            action_value = min_value(getAction(currentstate, action), d)
+            if best_value is None or best_value < action_value:
+                best_action = action
+                best_value = action_value
+        return best_action
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
