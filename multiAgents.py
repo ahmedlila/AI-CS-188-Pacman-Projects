@@ -194,10 +194,10 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        return self.minimax(gameState, agentIndex=0, depth=self.depth, alpha=-inf, beta=inf)[1]
+        return self.alphabeta(gameState, agentIndex=0, depth=self.depth, alpha=-inf, beta=inf)[1]
 
 
-    def minimax(self, gameState, agentIndex, depth, alpha, beta):
+    def alphabeta(self, gameState, agentIndex, depth, alpha, beta):
         if depth == 0 or gameState.isLose() or gameState.isWin():
             return (self.evaluationFunction(gameState),None)
         elif agentIndex == 0:
@@ -213,7 +213,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         if next_agent==0: depth -= 1
         for action in legalMoves:
             successor = gameState.generateSuccessor(agentIndex, action)
-            nextScore, _ = self.minimax(successor, next_agent, depth, alpha, beta)
+            nextScore, _ = self.alphabeta(successor, next_agent, depth, alpha, beta)
             if nextScore < mini:
                 mini, miniAction = nextScore, action
                 beta = min(beta, mini)
@@ -222,18 +222,19 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
     def max_value(self, gameState, agentIndex, depth, alpha, beta):
         maxi, maxiAction = -inf, None
-        # depth = depth - No Need
         legalMoves = gameState.getLegalActions(agentIndex)
         nextAgent = (agentIndex + 1) % gameState.getNumAgents()
-        #if nextAgent == 0: depth -=1 - No need
         for action in legalMoves:
             successor = gameState.generateSuccessor(agentIndex, action)
-            nextScore, _ = self.minimax(successor, nextAgent, depth, alpha, beta)
+            nextScore, _ = self.alphabeta(successor, nextAgent, depth, alpha, beta)
             if nextScore > maxi:
                 maxi, maxiAction = nextScore, action
                 alpha=max(alpha, maxi)
-            if alpha>beta: return maxi, maxiAction #Greater Only 
+            if alpha>beta: return maxi, maxiAction #Greater Only
         return maxi, maxiAction
+
+
+
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
       Your expectimax agent (question 4)
@@ -247,7 +248,6 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
 
 def betterEvaluationFunction(currentGameState):
     """
