@@ -140,12 +140,26 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
     def getAction(self, gameState):
         """
-        You do not need to change this method, but you're welcome to.
+        Returns the minimax action from the current gameState using self.depth
+        and self.evaluationFunction.
 
-        getAction chooses among the best options according to the evaluation function.
+        Here are some method calls that might be useful when implementing minimax.
 
-        Just like in the previous project, getAction takes a GameState and returns
-        some Directions.X for some X in the set {NORTH, SOUTH, WEST, EAST, STOP}
+        gameState.getLegalActions(agentIndex):
+        Returns a list of legal actions for an agent
+        agentIndex=0 means Pacman, ghosts are >= 1
+
+        gameState.generateSuccessor(agentIndex, action):
+        Returns the successor game state after an agent takes an action
+
+        gameState.getNumAgents():
+        Returns the total number of agents in the game
+
+        gameState.isWin():
+        Returns whether or not the game state is a winning state
+
+        gameState.isLose():
+        Returns whether or not the game state is a losing state
         """
         return self.minimax(gameState, agentIndex=0, depth=self.depth)[1]
 
