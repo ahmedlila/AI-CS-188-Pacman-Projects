@@ -147,40 +147,42 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Just like in the previous project, getAction takes a GameState and returns
         some Directions.X for some X in the set {NORTH, SOUTH, WEST, EAST, STOP}
         """
-        """
-        # Collect legal moves and successor states
-        legalMoves = gameState.getLegalActions()
-        # Choose one of the best actions
-        scores = [self.evaluationFunction(gameState) for action in legalMoves]
-        bestScore = max(scores)
-        bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
-        chosenIndex = random.choice(bestIndices)  # Pick randomly among the best
-        print(scores, bestScore, bestIndices)
-        "Add more of your code here if you want to" 
-        """
-        legalMoves = gameState.getLegalActions(0)
-        successors= (gameState.generateSuccessor(0, action) for action in legalMoves)
-        scores= [ self.minimax( successor, 1, self.depth) for successor in successors] #Minimum first
-        max_val= max(scores)
-        idx= scores.index(max_val)
-        return legalMoves[idx]
+        return self.minimax(gameState, agentIndex=0, depth=self.depth)[1]
 
 
-    def minimax(self, currentstate, agentIndex, depth):
-        '''Minimax implementation.'''
-        # Base Case
-        if depth==0 or currentstate.isWin() or currentstate.isLose():
-            return self.evaluationFunction(currentstate)
+    def minimax(self, gameState, agentIndex, depth):
+        if depth == 0 or gameState.isLose() or gameState.isWin():
+            return (self.evaluationFunction(gameState),None)
+        elif agentIndex == 0:
+            return self.max_value(gameState, agentIndex, depth)
+        else:
+            return self.min_value(gameState, agentIndex, depth)
 
-        newagentIndex = (agentIndex + 1) % currentstate.getNumAgents() #get the next Agent Index
-        if agentIndex!=0 and newagentIndex==0: depth = depth-1
-        #if the current agent ghost and next is Pacman: decrease the depth
-        legalMoves = currentstate.getLegalActions(agentIndex)
-        successors = (currentstate.generateSuccessor(agentIndex, action) for action in legalMoves)
-        scores = [self.minimax(successor, newagentIndex, depth) for successor in successors]
+    def min_value(self, gameState, agentIndex, depth):
+        mini, miniAction = inf, None
+        depth = depth
+        legalMoves = gameState.getLegalActions(agentIndex)
+        next_agent = (agentIndex + 1) % gameState.getNumAgents()
+        if next_agent==0: depth -= 1
+        for action in legalMoves:
+            successor = gameState.generateSuccessor(agentIndex, action)
+            nextScore, _ = self.minimax(successor, next_agent, depth)
+            if nextScore < mini:
+                mini, miniAction = nextScore, action
+        return mini, miniAction
 
-        if agentIndex==0: return max(scores) #Pacman
-        else: return min(scores) #Ghosts
+    def max_value(self, gameState, agentIndex, depth):
+        maxi, maxiAction = -inf, None
+        # depth = depth - No Need
+        legalMoves = gameState.getLegalActions(agentIndex)
+        nextAgent = (agentIndex + 1) % gameState.getNumAgents()
+        #if nextAgent == 0: depth -=1 - No need
+        for action in legalMoves:
+            successor = gameState.generateSuccessor(agentIndex, action)
+            nextScore, _ = self.minimax(successor, nextAgent, depth)
+            if nextScore > maxi: maxi, maxiAction = nextScore, action
+        return maxi, maxiAction
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
