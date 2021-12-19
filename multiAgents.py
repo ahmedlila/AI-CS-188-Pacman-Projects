@@ -248,7 +248,37 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
+        # 16m16s: https://www.youtube.com/watch?v=jaFRyzp7yWw
+        return self.value(gameState, agentIndex=0, depth=self.depth)[1]
 
+    def value(self, gameState, agentIndex, depth):  # Dispatch Function
+        if depth == 0 or gameState.isLose() or gameState.isWin():
+            return (self.evaluationFunction(gameState), None)
+        elif agentIndex == 0:
+            return self.max_value(gameState, agentIndex, depth)
+        else:
+            return self.exp_value(gameState, agentIndex, depth)
+
+    def max_value(self, gameState, agentIndex, depth):
+        maxi, maxiAction = -inf, None
+        legalMoves = gameState.getLegalActions(agentIndex)
+        nextAgent = (agentIndex + 1) % gameState.getNumAgents()
+        for action in legalMoves:
+            successor = gameState.generateSuccessor(agentIndex, action)
+            nextScore, _ = self.value(successor, nextAgent, depth)
+            if nextScore > maxi: maxi, maxiAction = nextScore, action
+        return maxi, maxiAction
+
+    def exp_value(self, gameState, agentIndex, depth):
+        exp, expAction = 0, None
+        legalMoves = gameState.getLegalActions(agentIndex)
+        nextAgent = (agentIndex + 1) % gameState.getNumAgents()
+        if nextAgent == 0: depth -= 1
+        for action in legalMoves:
+            successor = gameState.generateSuccessor(agentIndex, action)
+            successorProb = 1 / len(legalMoves)  # Equiprobable
+            exp += successorProb * self.value(successor, nextAgent, depth)[0]
+        return exp, expAction
 def betterEvaluationFunction(currentGameState):
     """
     Your extreme ghost-hunting, pellet-nabbing, food-gobbling, unstoppable
