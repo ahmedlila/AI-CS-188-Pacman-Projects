@@ -78,13 +78,9 @@ class ReflexAgent(Agent):
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
         newPos_ghost= successorGameState.getGhostPosition(1)
-        capsules=[capsule for capsule in successorGameState.getCapsules()]
         "*** YOUR CODE HERE ***"
         #Reflex agent Depends on current state and take an action based on it
         ghost_distance= util.manhattanDistance(newPos, newPos_ghost)
-        hasFood= successorGameState.hasFood(newPos[0],newPos[1])
-        print(successorGameState.getScore(),ghost_distance,hasFood)
-        #capsules_distance= [util.manhattanDistance(capsules[i],newPos) for i in range(len(capsules))]
         #From Grid Class
         foodLoc=[]
         for i in range(newFood.width):
