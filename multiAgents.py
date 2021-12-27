@@ -297,7 +297,52 @@ def betterEvaluationFunction(currentGameState):
     DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
 
-# Abbreviation
+
+    newPos = currentGameState.getPacmanPosition()   #Pacman position after moving (newPos)
+    newFood = currentGameState.getFood()    #remaining food (newFood)
+    newGhostStates = currentGameState.getGhostStates()  #Ghost State
+    newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]     #no. of moves that each ghost will remain scared
+
+    ScaredTime = min(newScaredTimes)   #Minimum no. of moves that a ghost will remain scared
+
+    #Distance Between Pacman and ghosts
+    ghost_pacman_distance = []
+    for i in range(len(newGhostStates)):
+        newPos_ghost = currentGameState.getGhostPosition(i+1)
+        ghost_pacman_distance.append(util.manhattanDistance(newPos, newPos_ghost))
+    ghostDist = min(ghost_pacman_distance)   #Distance from Pacman to nearest ghost
+
+
+    #Food distance, remaining food
+    foodLoc = []
+    food_remain = 0
+    for i in range(newFood.width):
+        for j in range(newFood.height):
+            if newFood[i][j]:
+                food_remain += 1   #Remainig Food
+                loc = (i, j)
+                value = util.manhattanDistance(newPos, loc)
+                foodLoc.append(value)
+    #Distance to nearest position with food
+    if len(foodLoc) > 1:  # [1,2,1,4,2,5,8]
+        foodDist = min(foodLoc)    #Food Distance
+    elif len(foodLoc) == 1:
+        foodDist = foodLoc[0]
+    else:
+        foodDist = 1
+
+    """
+    *If Ghosts are not scared, the distance between Pacman and ghosts will be taken into consideration
+    since the ghost can eat pacman (with negative weight). 
+    *While if Ghosts are scared, the distance between Pacman and ghosts will not be considered.
+    *Food distance will be considered with weight such that it minimizes the distance to food.
+    *Remaining food will be multiplied by negative since we want it to be minimized.    
+    """
+    if ScaredTime == 0:
+        return (80*currentGameState.getScore()) + (-20/(ghostDist+1)) + (30 / (foodDist+1)) - (10*food_remain)
+    return (80*currentGameState.getScore()) + (20/(ghostDist+1)) + (30/(foodDist+1)) + (20*ScaredTime) - (10*food_remain)
+
+
+
 better = betterEvaluationFunction
