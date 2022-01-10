@@ -31,6 +31,7 @@ import mdp, util
 from learningAgents import ValueEstimationAgent
 import collections
 
+
 class ValueIterationAgent(ValueEstimationAgent):
     """
         * Please read learningAgents.py before reading this.*
