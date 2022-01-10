@@ -4,3 +4,5 @@
 3- Reinforcement/.idea/modules.xml
 3- Reinforcement/.idea/inspectionProfiles/profiles_settings.xml
 3- Reinforcement/.idea/3- Reinforcement.iml
+3- Reinforcement/__pycache__/analysis.cpython-38.pyc
+*.pyc
