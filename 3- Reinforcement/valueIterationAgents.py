@@ -176,7 +176,6 @@ class AsynchronousValueIterationAgent(ValueIterationAgent):
 class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
     """
         * Please read learningAgents.py before reading this.*
-
         A PrioritizedSweepingValueIterationAgent takes a Markov decision process
         (see mdp.py) on initialization and runs prioritized sweeping value iteration
         for a given number of iterations using the supplied parameters.
@@ -205,7 +204,7 @@ class PrioritizedSweepingValueIterationAgent(AsynchronousValueIterationAgent):
                 diff = abs(self.values[state] -action_highest_Q)
                 priority_queue.update(state, -diff)
 
-        ##start iterations
+        #Iterate No. of iterations: self.iterations
         for i in range(self.iterations):
             if priority_queue.isEmpty(): break
             state = priority_queue.pop()
