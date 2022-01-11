@@ -6,5 +6,5 @@
 | **Project Number** | **Project Type** | **File Name** 
 |:----------|:---------------------------------|:------------------------------|
 | 1      | Search            | [`Search`](https://github.com/ahmedlila/AI-CS-188-Pacman-Projects/tree/main/1-%20Search)             |
-| 2      | Multi-Agent Search            | [`Multi-Agent Search`](https://github.com/ahmedlila/AI-CS-188-Pacman-Projects/tree/main/2-%20MultiAgent             |
+| 2      | Multi-Agent Search            | [`Multi-Agent Search`](https://github.com/ahmedlila/AI-CS-188-Pacman-Projects/tree/main/2-%20MultiAgent)             |
 | 3      | Reinforcement Learning            | [`Reinforcement Learning`](https://github.com/ahmedlila/AI-CS-188-Pacman-Projects/tree/main/3-%20Reinforcement)             |
